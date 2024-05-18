@@ -1,1 +1,1 @@
-# WordFinderNet8
+# WordFinder API Net8 - QU Developer Challenge
