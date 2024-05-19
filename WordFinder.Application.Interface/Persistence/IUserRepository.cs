@@ -4,7 +4,7 @@ namespace WordFinder.Application.Interface.Persistence
 {
     public interface IUserRepository
     {
-        Task<User> GetAync(string client);
+        Task<User> GetAsync(string client);
         Task<bool> InsertAync(User user);
     }
 }

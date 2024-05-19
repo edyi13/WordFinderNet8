@@ -1,3 +1,10 @@
+using Asp.Versioning.ApiExplorer;
+using WordFinder.Application.UseCases;
+using WordFinder.Infrastructure;
+using WordFinderNet8.WebApi.Extensions.Middleware;
+using WordFinderNet8.WebApi.Extensions.Swagger;
+using WordFinderNet8.WebApi.Extensions.Versioning;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -7,18 +14,34 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// Add Methods Extensions
+builder.Services.AddInjectionPersistence();
+builder.Services.AddInjectionApplication();
+
+builder.Services.AddVersioning();
+builder.Services.AddSwagger();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c =>
+    {
+        var provider = app.Services.GetRequiredService<IApiVersionDescriptionProvider>();
+        foreach (var description in provider.ApiVersionDescriptions)
+        {
+            c.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json", description.GroupName.ToLowerInvariant());
+        }
+    });
 }
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
+app.AddMiddleware();
 
 app.MapControllers();
 

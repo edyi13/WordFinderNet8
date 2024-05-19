@@ -11,7 +11,7 @@ namespace WordFinder.Infrastructure.Persistence.Repositories
         /// <param name="matrix">Is an array of strings representing the matrix.</param>
         /// <param name="wordstream">Is an array of strings representing the words to search for.</param>
         /// <returns></returns>
-        public IEnumerable<string> Find(IEnumerable<string> matrix, IEnumerable<string> wordstream)
+        public Task<IEnumerable<string>> Find(IEnumerable<string> matrix, IEnumerable<string> wordstream)
         {
             // Run FindHorizontal and FindVertical in parallel
             var horizontalTask = Task.Run(() => FindHorizontal(matrix.ToArray(), wordstream.ToArray()));
@@ -25,10 +25,11 @@ namespace WordFinder.Infrastructure.Persistence.Repositories
             words.AddRange(verticalTask.Result);
 
             //return the 10 most repeated words
-            return words.GroupBy(x => x)
+            var result = words.GroupBy(x => x)
                 .OrderByDescending(x => x.Count())
                 .Take(10)
                 .Select(x => $"{x.Count()}x {x.Key}");
+            return Task.FromResult(result);
         }
 
         private string[] GetColumn(string[] matrix, int index)
@@ -68,7 +69,7 @@ namespace WordFinder.Infrastructure.Persistence.Repositories
                             if (wordFound.Length == word.Length)
                             {
                                 // If the word is complete, add it to the list of words and clear the StringBuilder
-                                words.Add(wordFound.ToString());
+                                words.Add(wordFound.ToString().ToUpperInvariant());
                                 wordFound.Clear();
                             }
                         }
@@ -111,7 +112,7 @@ namespace WordFinder.Infrastructure.Persistence.Repositories
                             if (wordFound.Length == word.Length)
                             {
                                 // If the word is complete, add it to the list of words and clear the StringBuilder
-                                words.Add(wordFound.ToString());
+                                words.Add(wordFound.ToString().ToUpperInvariant());
                                 wordFound.Clear();
                             }
                         }
@@ -132,7 +133,7 @@ namespace WordFinder.Infrastructure.Persistence.Repositories
         /// <param name="matrixSize">The size of the square matrix</param>
         /// <returns>The generated matrix as a list of strings</returns>
 
-        public IEnumerable<string> GenerateMatrix(IEnumerable<string> words, int matrixSize)
+        public Task<IEnumerable<string>> GenerateMatrix(IEnumerable<string> words, int matrixSize)
         {
             Random random = new Random();
             char[][] matrix = new char[matrixSize][];
@@ -166,11 +167,11 @@ namespace WordFinder.Infrastructure.Persistence.Repositories
                         {
                             if (direction == 0)
                             {
-                                matrix[row][column + i] = word[i]; // Horizontal placement
+                                matrix[row][column + i] = word.ToUpper()[i]; // Horizontal placement
                             }
                             else
                             {
-                                matrix[row + i][column] = word[i]; // Vertical placement
+                                matrix[row + i][column] = word.ToUpper()[i]; // Vertical placement
                             }
                         }
                         placed = true;
@@ -191,7 +192,8 @@ namespace WordFinder.Infrastructure.Persistence.Repositories
             }
 
             // Convert matrix to list of strings and return
-            return matrix.Select(row => new string(row)).ToList();
+            var result = matrix.Select(row => new string(row));
+            return Task.FromResult(result);
         }
     }
 

@@ -8,7 +8,7 @@ namespace WordFinder.Application.Interface.Persistence
 {
     public interface IWordFinderRepository
     {
-        IEnumerable<string> Find(IEnumerable<string> matrix, IEnumerable<string> wordstream);
-        IEnumerable<string> GenerateMatrix(IEnumerable<string> words, int matrixSize);
+        Task<IEnumerable<string>> Find(IEnumerable<string> matrix, IEnumerable<string> wordstream);
+        Task<IEnumerable<string>> GenerateMatrix(IEnumerable<string> words, int matrixSize);
     }
 }

@@ -4,16 +4,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WordFinder.Application.Interface.Persistence;
+using WordFinder.Domain.Entities;
 
 namespace WordFinder.Infrastructure.Persistence.Repositories
 {
     internal class UnitOfWork : IUnitOfWork
     {
-        public IUserRepository Users { get; }
+        public IWordFinderRepository WordFinder { get; }
 
-        public UnitOfWork(IUserRepository users)
+        public UnitOfWork(IWordFinderRepository wordFinder)
         {
-            Users = users ?? throw new ArgumentNullException(nameof(users));
+            WordFinder = wordFinder;
         }
 
         public void Dispose()

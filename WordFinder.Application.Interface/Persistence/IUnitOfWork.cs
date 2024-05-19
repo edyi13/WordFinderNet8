@@ -8,6 +8,6 @@ namespace WordFinder.Application.Interface.Persistence
 {
     public interface IUnitOfWork : IDisposable
     {
-        IUserRepository Users { get; }
+        IWordFinderRepository WordFinder { get; }
     }
 }
