@@ -34,7 +34,14 @@ namespace WordFinder.Infrastructure.Persistence.Repositories
 
         private string[] GetColumn(string[] matrix, int index)
         {
-            return matrix.Select(row => row[index].ToString()).ToArray();
+            try
+            {
+                return matrix.Select(row => row[index].ToString()).ToArray();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
         /// <summary>
