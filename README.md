@@ -1,4 +1,4 @@
-# WordFinder API Net8 - QU Developer Challenge
+# WordFinder API Net8
 > This API is deployed and running in Azure, ask for the URL if it was not provided.
 
 ##Step to test in Postman
